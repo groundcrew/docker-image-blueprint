@@ -1,0 +1,141 @@
+---
+dependencies: []
+templates: []
+
+option_base_image: &option_base_image
+  name: base_image
+  prompt: Provide base image details to implement caching?
+  type: add_docker_image_resource
+  params:
+    repository: user
+    tag: user|latest
+    task: build
+
+option_image_properties: &option_image_properties
+  name: image_properties
+  prompt: Provide image details for tagging and deployment?
+  type: add_task_params
+  params:
+    repository: user
+    image: user
+    task: "*"
+
+components:
+  test:
+    name: test
+    option:
+      - *option_image_properties
+    resource_types: []
+    resources: []
+    job:
+      name: test
+      public: true
+      pull_request: false
+      trigger: true
+      every_version: false
+      passed: []
+      steps:
+        - name: build
+          type: task
+          privileged: true
+          task:
+            platform: linux
+            image: docker.internal.digitalocean.com/concourse/dcind
+            image_tag: latest
+            inputs:
+              code:
+                name: code
+            outputs:
+              build:
+                name: build
+            pre:
+              - "/concourse-diag.sh"
+              - "source /docker-lib.sh"
+              - "start_docker"
+            target: "docker build . -t ${IMAGE}:${TAG}"
+            post:
+              - "docker images"
+              - "docker save"
+        - name: test
+          type: task
+          privileged: true
+          task:
+            platform: linux
+            image: docker.internal.digitalocean.com/concourse/dcind
+            image_tag: latest
+            inputs:
+              code:
+                name: code
+              build:
+                name: build
+        - name: push
+          type: task
+          privileged: true
+          task:
+            platform: linux
+            image: docker.internal.digitalocean.com/concourse/dcind
+            image_tag: latest
+            inputs:
+              code:
+                name: code
+              build:
+                name: build
+      on_failure: []
+      on_success: []
+      on_abort: []
+      ensure: []
+  test-pr:
+    name: test-pr
+    option:
+      - *option_base_image
+    resource_types: []
+    resources: []
+    job:
+      name: test
+      public: true
+      pull_request: true
+      trigger: true
+      every_version: true
+      passed: []
+      steps:
+        - name: build
+          type: task
+          privileged: true
+          task:
+            platform: linux
+            image: docker.internal.digitalocean.com/concourse/dcind
+            image_tag: latest
+            inputs:
+              code:
+                name: code
+            outputs:
+              build:
+                name: build
+        - name: test
+          type: task
+          privileged: true
+          task:
+            platform: linux
+            image: docker.internal.digitalocean.com/concourse/dcind
+            image_tag: latest
+            inputs:
+              code:
+                name: code
+              build:
+                name: build
+        - name: push
+          type: task
+          privileged: true
+          task:
+            platform: linux
+            image: docker.internal.digitalocean.com/concourse/dcind
+            image_tag: latest
+            inputs:
+              code:
+                name: code
+              build:
+                name: build
+      on_failure: []
+      on_success: []
+      on_abort: []
+      ensure: []
