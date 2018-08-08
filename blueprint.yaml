@@ -1,6 +1,6 @@
 ---
 dependencies: []
-templates: []
+templates: {}
 
 option_base_image: &option_base_image
   name: base_image
@@ -21,12 +21,18 @@ option_image_properties: &option_image_properties
     task: "*"
 
 components:
+  deploy-staging:
+    name: deploy-staging
+    parent: github.internal.digitalocean.com/digitalocean/groundcrew-stage2.deploy
+    job:
+      name: deploy
+      public: false
   test:
     name: test
     option:
       - *option_image_properties
-    resource_types: []
-    resources: []
+    resource_types: {}
+    resources: {}
     job:
       name: test
       public: true
@@ -88,8 +94,8 @@ components:
     name: test-pr
     option:
       - *option_base_image
-    resource_types: []
-    resources: []
+    resource_types: {}
+    resources: {}
     job:
       name: test
       public: true
