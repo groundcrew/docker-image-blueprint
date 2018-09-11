@@ -21,12 +21,6 @@ option_image_properties: &option_image_properties
     task: "*"
 
 components:
-  deploy-staging:
-    name: deploy-staging
-    parent: github.internal.digitalocean.com/digitalocean/groundcrew-stage2.deploy
-    job:
-      name: deploy
-      public: false
   test:
     name: test
     option:
