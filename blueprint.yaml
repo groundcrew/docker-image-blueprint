@@ -5,7 +5,7 @@ templates: {}
 option_base_image: &option_base_image
   name: base_image
   prompt: Provide base image details to implement caching?
-  type: add_docker_image_resource
+  parser: "core:docker_cache_base_image"
   params:
     repository: user
     tag: user|latest
@@ -14,7 +14,7 @@ option_base_image: &option_base_image
 option_image_properties: &option_image_properties
   name: image_properties
   prompt: Provide image details for tagging and deployment?
-  type: add_task_params
+  parser: "core:task_params"
   params:
     repository: user
     image: user
@@ -23,7 +23,7 @@ option_image_properties: &option_image_properties
 components:
   test:
     name: test
-    option:
+    options:
       - *option_image_properties
     resource_types: {}
     resources: {}
@@ -86,7 +86,7 @@ components:
       ensure: []
   test-pr:
     name: test-pr
-    option:
+    options:
       - *option_base_image
     resource_types: {}
     resources: {}
