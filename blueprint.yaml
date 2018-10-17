@@ -1,7 +1,4 @@
 ---
-dependencies: []
-templates: {}
-
 option_base_image: &option_base_image
   name: base_image
   prompt: Provide base image details to implement caching?
@@ -40,7 +37,7 @@ components:
           privileged: true
           task:
             platform: linux
-            image: docker.internal.digitalocean.com/concourse/dcind
+            image: amidos/dcind
             image_tag: latest
             inputs:
               code:
@@ -49,7 +46,6 @@ components:
               build:
                 name: build
             pre:
-              - "/concourse-diag.sh"
               - "source /docker-lib.sh"
               - "start_docker"
             target: "docker build . -t ${IMAGE}:${TAG}"
@@ -61,7 +57,7 @@ components:
           privileged: true
           task:
             platform: linux
-            image: docker.internal.digitalocean.com/concourse/dcind
+            image: amidos/dcind
             image_tag: latest
             inputs:
               code:
@@ -73,7 +69,7 @@ components:
           privileged: true
           task:
             platform: linux
-            image: docker.internal.digitalocean.com/concourse/dcind
+            image: amidos/dcind
             image_tag: latest
             inputs:
               code:
@@ -103,7 +99,7 @@ components:
           privileged: true
           task:
             platform: linux
-            image: docker.internal.digitalocean.com/concourse/dcind
+            image: amidos/dcind
             image_tag: latest
             inputs:
               code:
@@ -116,7 +112,7 @@ components:
           privileged: true
           task:
             platform: linux
-            image: docker.internal.digitalocean.com/concourse/dcind
+            image: amidos/dcind
             image_tag: latest
             inputs:
               code:
@@ -128,7 +124,7 @@ components:
           privileged: true
           task:
             platform: linux
-            image: docker.internal.digitalocean.com/concourse/dcind
+            image: amidos/dcind
             image_tag: latest
             inputs:
               code:
